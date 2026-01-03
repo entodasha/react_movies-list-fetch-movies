@@ -27,10 +27,9 @@ export const App = () => {
   const handleSubmit = useMemo(() => {
     return (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-
-      setIsLoading(true);
-
       if (query) {
+        setIsLoading(true);
+
         getMovie(query)
           .then(result => {
             if ('Error' in result && result.Response === 'False') {
