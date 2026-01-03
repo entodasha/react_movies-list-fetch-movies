@@ -7,14 +7,17 @@ import { MovieData } from './types/MovieData';
 import { getMovie } from './api';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const [query, setQuery] = useState<string>('');
   const [movieData, setMovieData] = useState<MovieData | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [visibleMovies, setVisibleMovies] = useState<Movie[]>(movies);
+  function resetForm() {
+    setQuery('');
+    setMovieData(null);
+  }
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -50,20 +53,16 @@ export const App = () => {
   const addMovie = useMemo(() => {
     return (newMovie: Movie) => {
       if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
-        setQuery('');
-        setMovieData(null);
+        resetForm();
 
         return;
       }
 
-      movies.push(newMovie);
+      setMovies(prevMovies => [...prevMovies, newMovie]);
 
-      setVisibleMovies([...visibleMovies, newMovie]);
-
-      setQuery('');
-      setMovieData(null);
+      resetForm();
     };
-  }, [movies, visibleMovies]);
+  }, [movies]);
 
   return (
     <div className="page">
